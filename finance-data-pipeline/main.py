@@ -1,11 +1,13 @@
 import requests
-import polars as pl
 from datetime import datetime
 from dotenv import load_dotenv
 import os
 
 # Import the db_handler functions
-from db_handler import setup_database, insert_data_to_db
+from db_handler import setup_database, insert_data_to_db, check_calculations_columns
+
+# Import the calculations functions
+from calculations import calculate_and_update_rsi, calculate_moving_avg
 
 # Load environment variables
 load_dotenv()
@@ -14,10 +16,11 @@ ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 BASE_URL = "https://www.alphavantage.co/query"
 
 # List of stock symbols to query
-STOCK_SYMBOLS = ["NVDA"]
+STOCK_SYMBOLS = ["NVDA","AMD"]
 
 # Step 1: Ensure the database is ready
 setup_database()
+check_calculations_columns()
 
 # Step 2: Function to fetch data from Alpha Vantage
 def fetch_stock_data(symbol):
@@ -57,7 +60,7 @@ def fetch_stock_data(symbol):
         print(f"Error fetching data for {symbol}: {e}")
         return []
 
-# Step 3: Loop through the stocks and fetch + insert data
+# Step 3: Loop through the stocks and fetch + insert data + calculating rsi
 def main():
     for symbol in STOCK_SYMBOLS:
         print(f"Fetching data for {symbol}...")
@@ -66,6 +69,9 @@ def main():
         if stock_data:
             print(f"Inserting data for {symbol} into the database...")
             insert_data_to_db(stock_data)
+
+            calculate_and_update_rsi(symbol)
+            calculate_moving_avg(symbol)
         else:
             print(f"No data to insert for {symbol}.")
 
