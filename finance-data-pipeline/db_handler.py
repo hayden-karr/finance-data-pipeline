@@ -11,6 +11,7 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME")
 
+# Get database connection
 def get_db_connection():
     try:
         connection = mysql.connector.connect(
@@ -24,7 +25,10 @@ def get_db_connection():
         print(f"Error connecting to the database: {e}")
         return None
 
+# Setup database
 def setup_database():
+    connection = None
+    cursor = None
     try:
         connection = mysql.connector.connect(
             host=DB_HOST,
@@ -33,7 +37,6 @@ def setup_database():
         )
         if connection.is_connected():
             print("Connected to MySQL server")
-
             cursor = connection.cursor()
 
             # Create database if it doesn't exist
@@ -61,16 +64,20 @@ def setup_database():
     except Error as e:
         print(f"Error setting up the database: {e}")
     finally:
-        if connection.is_connected():
+        # Close cursor and connection if they were created
+        if cursor is not None:
             cursor.close()
+        if connection is not None and connection.is_connected():
             connection.close()
             print("Database setup complete.")
 
+# Insert data into database
 def insert_data_to_db(data):
     connection = get_db_connection()
     if not connection:
         return
 
+    cursor = None
     try:
         cursor = connection.cursor()
 
@@ -95,6 +102,9 @@ def insert_data_to_db(data):
     except Error as e:
         print(f"Error inserting data: {e}")
     finally:
-        if connection.is_connected():
+        # Close cursor and connection if they were created
+        if cursor is not None:
             cursor.close()
+        if connection.is_connected():
             connection.close()
+            print("Database data insertion complete.")

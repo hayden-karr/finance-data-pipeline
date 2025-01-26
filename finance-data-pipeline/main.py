@@ -14,7 +14,7 @@ ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 BASE_URL = "https://www.alphavantage.co/query"
 
 # List of stock symbols to query
-STOCK_SYMBOLS = ["AMD", "MSFT", "NVDA"]
+STOCK_SYMBOLS = ["NVDA"]
 
 # Step 1: Ensure the database is ready
 setup_database()
