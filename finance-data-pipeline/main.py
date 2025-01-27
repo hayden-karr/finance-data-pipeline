@@ -60,7 +60,7 @@ def fetch_stock_data(symbol):
         print(f"Error fetching data for {symbol}: {e}")
         return []
 
-# Step 3: Loop through the stocks and fetch + insert data + calculating rsi
+# Step 3: Loop through the stocks and fetch + insert data + calculating rsi and msa
 def main():
     for symbol in STOCK_SYMBOLS:
         print(f"Fetching data for {symbol}...")
